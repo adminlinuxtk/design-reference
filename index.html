@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova's Design Reference — Inspired by The Coding Train</title>
+<style>
+  /* ─── Nova's Design Reference ───
+     Inspired by The Coding Train's craft + adapted for premium web (Porch Light)
+     
+     What I learned from CodingTrain/website-archive:
+     
+     ARCHITECTURE:
+     • SASS 7-1: Tools → Base → Layouts → Modules
+     • Components as reusable Sass partials (_vars, _global, _ctas, _video-card)
+     • Responsive system with 6 breakpoints (mobile:550 → desktop:1200)
+     • Modular includes in Jekyll (video-card, hero-item, video-list)
+
+     DESIGN PRINCIPLES:
+     • Playful custom font (cubano) + approachable body (Open Sans)
+     • Vibrant 9-color palette (blue, green, purple, red, yellow, pink, magenta, peach, plum)
+     • Buttons with 6px bottom shadow + hover scale(0.98) press effect
+     • Video cards with hover lift (-5px translateY)
+     • Fixed nav with mobile drawer + staggered link animations
+     • Organic rounded corners (5px standard)
+     • Full-width colored footer bands
+     • Hero items: icon + title + description + CTA
+     
+     MY ADAPTATION FOR PREMIUM WEB:
+     • Warmer palette: cream backgrounds, gold/terracotta accents (not dark navy)
+     • Subtler shadows (no heavy box shadows — cleaner)
+     • More whitespace, refined typography scale
+     • Same modular component architecture
+     • Same responsive-first thinking
+     • Same craftsmanship feel — buttons press, cards lift, links animate
+  */
+
+  /* ─── 1. TOOLS ─── */
+  :root {
+    /* Palette — warm premium */
+    --cream: #FDF8F0;
+    --cream-dark: #F5EDE0;
+    --gold: #C9975A;
+    --gold-light: #E0C090;
+    --terracotta: #B85C3A;
+    --terracotta-light: #D4805E;
+    --sage: #7A9B7A;
+    --slate: #4A4A4A;
+    --slate-light: #7A7A7A;
+    --white: #FFFFFF;
+    --text: #2D2D2D;
+    --text-muted: #6B6B6B;
+    --border: #E8E0D4;
+    --shadow: rgba(0,0,0,0.04);
+    --shadow-strong: rgba(0,0,0,0.08);
+
+    /* Typography */
+    --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --title: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Sizing */
+    --radius: 8px;
+    --radius-sm: 4px;
+
+    /* Timing */
+    --ease: cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  /* ─── 2. BASE ─── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html {
+    font-size: 10px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--body);
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--cream);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrapper {
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 0 2.4rem;
+  }
+
+  /* ─── 3. TYPEFACE ─── */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--title);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  h1 { font-size: 5.6rem; }
+  h2 { font-size: 3.6rem; margin-bottom: 2.4rem; }
+  h3 { font-size: 2.4rem; }
+
+  .section-label {
+    font-family: var(--body);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ─── 4. CTA BUTTONS (Coding Train inspired press effect) ─── */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.4rem 3.2rem;
+    border-radius: var(--radius);
+    font-family: var(--body);
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--white);
+    background: var(--gold);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 0 0 rgba(0,0,0,0.08);
+    transition: all 200ms var(--ease);
+    transform: translateY(0);
+  }
+
+  .cta:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 0 rgba(0,0,0,0.08);
+  }
+
+  .cta:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 0 rgba(0,0,0,0.08);
+  }
+
+  .cta--outline {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--border);
+    box-shadow: none;
+  }
+  .cta--outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: none;
+    transform: translateY(-1px);
+  }
+
+  .cta--terracotta { background: var(--terracotta); }
+  .cta--sage { background: var(--sage); }
+  .cta--dark { background: var(--text); }
+
+  /* ─── 5. NAVIGATION ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(253, 248, 240, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    height: 7.2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  nav .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  nav .logo {
+    font-family: var(--title);
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  nav .logo span { color: var(--gold); }
+
+  nav .links {
+    display: flex;
+    gap: 3.2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  nav .links a {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 200ms var(--ease);
+    padding: 0.4rem 0;
+    border-bottom: 2px solid transparent;
+  }
+  nav .links a:hover { color: var(--text); border-bottom-color: var(--gold); }
+
+  .mobile-toggle { display: none; }
+
+  /* ─── 6. HERO SECTION ─── */
+  .hero {
+    padding: 16rem 0 8rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(201,151,90,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    max-width: 80rem;
+    margin: 0 auto 2.4rem;
+    font-size: 6.4rem;
+  }
+
+  .hero p {
+    max-width: 60rem;
+    margin: 0 auto 4rem;
+    font-size: 1.8rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .hero .ctas {
+    display: flex;
+    gap: 1.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ─── 7. CARD (inspired by Coding Train video-card) ─── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 350ms var(--ease);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px var(--shadow-strong);
+  }
+
+  .card__image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--gold);
+  }
+
+  .card__body {
+    padding: 2.4rem;
+  }
+
+  .card__body h3 { margin-bottom: 0.8rem; }
+  .card__body p { color: var(--text-muted); font-size: 1.4rem; line-height: 1.6; }
+  .card__meta {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── 8. GRID ─── */
+  .grid {
+    display: grid;
+    gap: 2.4rem;
+  }
+
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* ─── 9. SECTIONS ─── */
+  section {
+    padding: 8rem 0;
+  }
+
+  section.alt {
+    background: var(--cream-dark);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 64rem;
+    margin: 0 auto 4.8rem;
+  }
+
+  /* ─── 10. HERO ITEM (Coding Train inspired) ─── */
+  .hero-item {
+    text-align: center;
+    padding: 3.2rem 2rem;
+  }
+
+  .hero-item__icon {
+    width: 8rem;
+    height: 8rem;
+    margin: 0 auto 1.6rem;
+    background: var(--cream-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2rem;
+  }
+
+  .hero-item h3 { margin-bottom: 0.8rem; }
+  .hero-item p {
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    max-width: 30rem;
+    margin: 0 auto 2rem;
+  }
+
+  /* ─── 11. FOOTER (Coding Train full-width bands) ─── */
+  footer {
+    border-top: 1px solid var(--border);
+  }
+
+  footer .bands {
+    display: flex;
+  }
+
+  footer .bands a {
+    flex: 1;
+    padding: 3.2rem;
+    text-align: center;
+    font-family: var(--title);
+    font-size: 1.8rem;
+    text-decoration: none;
+    color: var(--white);
+    transition: all 200ms var(--ease);
+  }
+
+  footer .bands a:hover {
+    transform: scale(1.03);
+  }
+
+  footer .bands a:nth-child(1) { background: var(--gold); }
+  footer .bands a:nth-child(2) { background: var(--terracotta); }
+  footer .bands a:nth-child(3) { background: var(--sage); }
+
+  footer .bottom {
+    padding: 3.2rem 0;
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--text-muted);
+  }
+
+  /* ─── 12. ANIMATED BADGE (Coding Train badge pattern) ─── */
+  .badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--white);
+    font-family: var(--body);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 920px) {
+    html { font-size: 9px; }
+    .grid--3 { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 4.8rem; }
+    .hero h1 { font-size: 4.8rem; }
+  }
+
+  @media (max-width: 700px) {
+    nav .links { display: none; }
+    .mobile-toggle { display: block; }
+    .grid--3, .grid--2 { grid-template-columns: 1fr; }
+    h1 { font-size: 3.6rem; }
+    .hero { padding: 12rem 0 4rem; }
+    .hero h1 { font-size: 3.6rem; }
+    footer .bands { flex-direction: column; }
+  }
+
+  /* ─── 13. DIVIDER (organic, not AI-looking) ─── */
+  .divider {
+    max-width: 12rem;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto;
+  }
+
+  /* ─── 14. TESTIMONIAL ─── */
+  .testimonial {
+    text-align: center;
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 4rem;
+  }
+
+  .testimonial blockquote {
+    font-family: var(--title);
+    font-size: 2.4rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1.6rem;
+  }
+
+  .testimonial cite {
+    font-style: normal;
+    font-size: 1.4rem;
+    color: var(--text-muted);
+  }
+
+  /* ─── SHOWCASE ─── */
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .showcase-item {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--cream-dark);
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--title);
+    font-size: 1.8rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: all 350ms var(--ease);
+  }
+
+  .showcase-item:hover {
+    border-color: var(--gold);
+    transform: scale(1.02);
+  }
+
+  @media (max-width: 920px) {
+    .showcase-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 550px) {
+    .showcase-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─── DECORATION: Hand-drawn feel ─── */
+  .accent-line {
+    width: 4rem;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin: 1.6rem auto;
+  }
+
+  /* No colored decorative strips on sides — Tapash hates those */
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="wrapper">
+    <a href="#" class="logo">Porch<span>Light</span></a>
+    <ul class="links">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Process</a></li>
+      <li><a href="#"><span class="cta" style="padding: 1rem 2rem; font-size: 1.3rem;">Let's Talk</span></a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="wrapper">
+    <span class="section-label">Porch Light Web Studio</span>
+    <h1>Websites that feel<br>crafted, not generated.</h1>
+    <p>We build premium digital experiences with warmth and intention. No templates. No AI sheen. Just honest, beautiful design that connects.</p>
+    <div class="ctas">
+      <a href="#" class="cta">View Our Work →</a>
+      <a href="#" class="cta cta--outline">Start a Project</a>
+    </div>
+  </div>
+</section>
+
+<!-- Work section -->
+<section>
+  <div class="wrapper">
+    <div class="section-header">
+      <span class="section-label">Selected Work</span>
+      <h2>Recent projects</h2>
+      <div class="accent-line"></div>
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-item">Heritage Winery</div>
+      <div class="showcase-item">Atelier Studio</div>
+      <div class="showcase-item">Borough Coffee</div>
+      <div class="showcase-item">Field & Found</div>
+      <div class="showcase-item">Meridian Law</div>
+      <div class="showcase-item">Sage & Salt</div>
+    </div>
+  </div>
+</section>
+
+<!-- Services (Coding Train hero-item inspired) -->
+<section class="alt">
+  <div class="wrapper">
+    <div class="section-header">
+      <span class="section-label">What We Do</span>
+      <h2>Services</h2>
+      <div class="accent-line"></div>
+    </div>
+    <div class="grid grid--3">
+      <div class="hero-item">
+        <div class="hero-item__icon">🖌</div>
+        <h3>Design</h3>
+        <p>Custom visual identities and interfaces that feel uniquely yours — never templated.</p>
+        <a href="#" class="cta cta--outline" style="padding: 1rem 2.4rem; font-size: 1.3rem;">Learn More</a>
+      </div>
+      <div class="hero-item">
+        <div class="hero-item__icon">⚙️</div>
+        <h3>Development</h3>
+        <p>Lightweight, performant sites built with modern tools. No bloated frameworks.</p>
+        <a href="#" class="cta cta--outline" style="padding: 1rem 2.4rem; font-size: 1.3rem;">Learn More</a>
+      </div>
+      <div class="hero-item">
+        <div class="hero-item__icon">📈</div>
+        <h3>Strategy</h3>
+        <p>Content, SEO, and conversion architecture that turns visitors into clients.</p>
+        <a href="#" class="cta cta--outline" style="padding: 1rem 2.4rem; font-size: 1.3rem;">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cards (Coding Train video-card inspired) -->
+<section>
+  <div class="wrapper">
+    <div class="section-header">
+      <span class="section-label">Our Process</span>
+      <h2>How we work</h2>
+      <div class="accent-line"></div>
+    </div>
+    <div class="grid grid--3">
+      <div class="card">
+        <div class="card__image">🔍</div>
+        <div class="card__body">
+          <div class="card__meta">Phase 01</div>
+          <h3>Discover</h3>
+          <p>We learn your business, your audience, and your goals. No assumptions, just listening.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image">🎨</div>
+        <div class="card__body">
+          <div class="card__meta">Phase 02</div>
+          <h3>Design</h3>
+          <p>Moodboards, wireframes, and prototypes. Iterative, collaborative, and transparent.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image">🚀</div>
+        <div class="card__body">
+          <div class="card__meta">Phase 03</div>
+          <h3>Launch</h3>
+          <p>Built, tested, and deployed. We hand over with confidence and ongoing support.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="alt">
+  <div class="wrapper">
+    <div class="testimonial">
+      <span class="badge">Testimonial</span>
+      <div class="accent-line"></div>
+      <blockquote>"They didn't just build us a website — they gave us a digital presence that finally feels like us."</blockquote>
+      <cite>— Sarah Chen, Founder of Atelier Studio</cite>
+    </div>
+  </div>
+</section>
+
+<!-- Footer (Coding Train full-width bands) -->
+<footer>
+  <div class="bands">
+    <a href="#">Get in Touch →</a>
+    <a href="#">See Our Work →</a>
+    <a href="#">Read the Blog →</a>
+  </div>
+  <div class="bottom">
+    <div class="wrapper">
+      <p>Porch Light Web Studio — Crafting digital presence with warmth.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
